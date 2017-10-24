@@ -1,0 +1,123 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration file="C:\Users\helgeanl\Dropbox\NTNU\Prosjektoppgave\matlab\toolbox\MEA Analysis Toolbox.prj" location="C:\Users\helgeanl\Dropbox\NTNU\Prosjektoppgave\matlab\toolbox" name="MEA Analysis Toolbox" target="target.mlapps" target-name="Package App">
+    <param.appname>MEA Analysis Toolbox</param.appname>
+    <param.authnamewatermark>Helge-André Langåker</param.authnamewatermark>
+    <param.email>helgeanl@stud.ntnu.no</param.email>
+    <param.company>NTNU</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\Users\helgeanl\Dropbox\NTNU\Prosjektoppgave\matlab\toolbox</param.output>
+    <param.guid>cecacfe4-bb2c-49c3-b729-eb24b46983d9</param.guid>
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\MEA_Analysis_Toolbox.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsAnalogStream\McsAnalogStream.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsAnalogStream\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsAverageSegment\McsAverageSegment.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsAverageSegment\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsCutoutSegment\McsCutoutSegment.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsCutoutSegment\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsData\McsData.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsData\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsEventStream\McsEventStream.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsEventStream\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsFrameDataEntity\frameMovie.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsFrameDataEntity\McsFrameDataEntity.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsFrameDataEntity\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsFrameStream\McsFrameStream.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsFrameStream\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsRecording\McsRecording.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsRecording\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsSegmentStream\McsSegmentStream.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsSegmentStream\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsStream\McsStream.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsTimeStampStream\McsTimeStampStream.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\@McsTimeStampStream\plot.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\checkParameter.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\ExponentToUnit.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\SecToTick.m</file>
+      <file>C:\Users\helgeanl\Documents\MATLAB\Add-Ons\Toolboxes\McsMatlabDataTools\code\+McsHDF5\TickToSec.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\helgeanl\Dropbox\NTNU\Prosjektoppgave\matlab" name="toolbox" optional="false">C:\Users\helgeanl\Dropbox\NTNU\Prosjektoppgave\matlab\toolbox</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2017a</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabcoder" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="polyspacebugfinder" />
+      </toolboxes>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <polyspacebugfinder>
+          <enabled>true</enabled>
+        </polyspacebugfinder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.2</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
