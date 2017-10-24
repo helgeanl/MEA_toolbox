@@ -1,7 +1,7 @@
 function [  ] = heatmapPattern( timeStampData, instantaneous )
 %heatmapPattern Geneate heatmap of neurons firing within a delta
-% Takes in a time stamp data object (McsTimeStampStream) 
-% and generates a heatmap with number of spikes per channel
+%   Takes in a time stamp data object (McsTimeStampStream) 
+%   and generates a heatmap with number of spikes per channel
     if instantaneous == false
         while(1)
             delta = input(['Choose delta [' char(956) 's]: ']);
@@ -22,11 +22,11 @@ function [  ] = heatmapPattern( timeStampData, instantaneous )
                 if chan1Index ~= chan2Index
                     if instantaneous == true
                         if sum(timeStamps{1,chan2Index}>=(spikeTime) & timeStamps{1,chan2Index}<= (spikeTime +delta ))
-                        pattern(chan1Index,chan2Index) = pattern(chan1Index,chan2Index) +1;
+                            pattern(chan1Index,chan2Index) = pattern(chan1Index,chan2Index) +1;
                         end
                     else
                          if sum(timeStamps{1,chan2Index}>(spikeTime) & timeStamps{1,chan2Index}<= (spikeTime +delta ))
-                        pattern(chan1Index,chan2Index) = pattern(chan1Index,chan2Index) +1;
+                            pattern(chan1Index,chan2Index) = pattern(chan1Index,chan2Index) +1;
                         end
                     end
                 end

@@ -10,7 +10,7 @@ function [  ] = crossCor( data )
             end
         end
     end
-    figure(21);
+    figure;
     heatmap(cc);
     title('Cross correlation')
     ylabel('Electrodes')

@@ -1,7 +1,7 @@
 function [  ] = heatmapSpikes( timeStampData )
 %heatmapSpikes Generate heatmap of spike count
-% Takes in a time stamp data object (McsTimeStampStream) 
-% and generates a heatmap with number of spikes per channel
+%   Takes in a time stamp data object (McsTimeStampStream) 
+%   and generates a heatmap with number of spikes per channel
 
     label = 11;
     heat = zeros(8,8);

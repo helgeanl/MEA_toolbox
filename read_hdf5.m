@@ -15,6 +15,9 @@ end
 %% Input file
 clear; 
 [file, pathname] = uigetfile('*.h5','Select HDF5 file with recording');
+if ~file % Exit script if error in opening file
+    return
+end
 window = []; % Time window
 %% Load data
 %cfg = [];
@@ -32,9 +35,9 @@ input('Press ENTER to continue...')
 while 1
     %% Choose recording
     clc;
-    disp("1 - Spike cut")
+    disp("1 - Spike cutout")
     disp("2 - Analog values")
-    disp("3 - Timestamps")
+    disp("3 - Timestamps (spike train)")
     disp("0 - Exit")
     rec = input('Choose recording type: ');
 
@@ -57,47 +60,7 @@ while 1
             switch method
                 case 1
                     %% PCA on spike cutouts
-                    [coeff,score,latent,tsquared,explained,mu] = pca(cell2mat(spikeCuts.SegmentData));
-                    for i = 2:length(explained)
-                        explained(i) = explained(i)+explained(i-1);
-                    end
-                    figure(10);clf(10);
-                        plot(explained );
-                        ylim([0 100]);
-                        xlim([1 10]);
-                        xlabel('Principal components');
-                        ylabel('x-variance [%]');
-                        title('Explained variance');
-                    figure(11);clf(11);
-                        hold on;
-                        %for i=1:60
-                        %    scatter(score(i,1),score(i,2),'filled')
-                        %    text(score(i,1),score(i,2),spikeCuts.Info.Label(i));
-                        %end
-                        scatter(score(:,1),score(:,2),'filled')
-                        title('Score')
-                        xlabel('PC-1');
-                        ylabel('PC-2');
-                    figure(12);clf(12);
-                        hold on;
-                        channel = 0;
-                        numSpikes = 0;
-                        indexStart = 1;
-                        indexEnd = 1;
-                        for i=1:60
-                            numSpikes = size(spikeCuts.SegmentData{1,i},2);
-
-                            indexEnd = indexEnd + numSpikes -1;
-                            range = indexStart:indexEnd;
-                            scatter(coeff(range,1),coeff(range,2),'filled')
-                            text(coeff(range,1),coeff(range,2),spikeCuts.Info.Label(i));
-                            indexStart = indexStart + numSpikes;
-                        end
-                        %legend(spikeCuts.Info.Label);
-                        %scatter(coeff(:,1),coeff(:,2),'filled')
-                        title('Loadings')
-                        xlabel('PC-1');
-                        ylabel('PC-2');
+                    pcaSpikeCutout( spikeCuts )
                 case 0
                     break;
             end
@@ -105,11 +68,20 @@ while 1
     %% Load segments of analog channel data
     elseif rec == 2
         cfg = [];
-        chan = getLabelIndex('44');
         cfg.channel = []; % channel index ranging from i to j (1-60)
         cfg.window = window; % time range in seconds
         % Original
-        analogData = dataFile.Recording{1}.AnalogStream{1}.readPartialChannelData(cfg);
+        if size(dataFile.Recording{1}.AnalogStream,2) > 1
+            clc;
+            fprintf("Analog streams in the recording:\n");
+            for i=1:size(dataFile.Recording{1}.AnalogStream,2)
+                fprintf("%d - %s\n",i,dataFile.Recording{1}.AnalogStream{i}.Label);
+            end
+            stream = input('Select recording to process: ');
+        else
+            stream = 1;
+        end
+        analogData = dataFile.Recording{1}.AnalogStream{stream}.readPartialChannelData(cfg);
         % alpha
         %analogData2 = dataFile.Recording{1}.AnalogStream{2}.readPartialChannelData(cfg);
         % highpass
@@ -123,6 +95,7 @@ while 1
             clc;
             disp("1 - Cross correlation")
             disp("2 - PCA on timeseries")
+            disp("3 - Export raw data to .mat")
             disp("0 - Go back ")
             method = input('Choose method: ');
             switch method
@@ -131,42 +104,18 @@ while 1
                     crossCor(data);
                 case 2
                     %% PCA on timeseries
-                    [coeff,score,latent,tsquared,explained,mu] = pca((analogData.ChannelData)');
-                    for i = 2:length(explained)
-                        explained(i) = explained(i)+explained(i-1);
+                    pcaTimeSeries( analogData )
+                case 3
+                    %% Export raw data to .mat
+                    [file, pathname] = uiputfile('*.mat','Save file as');
+                    if file
+                        save([ pathname file ],'data');
                     end
-                    figure(22);clf(22);
-                        hold on
-                        %for i=1:60
-                        %    scatter(score(i,1),score(i,2),'filled')
-                        %    text(score(i,1),score(i,2),analogData.Info.Label(i));
-                        %end
-                        scatter(score(:,1),score(:,2),'filled')
-                        title('Scores')
-                        xlabel('PC-1');
-                        ylabel('PC-2');
-                    figure(23);clf(23);
-                        plot(explained );
-                        ylim([0 100]);
-                        xlim([1 10]);
-                        xlabel('Principal components');
-                        ylabel('x-variance [%]');
-                        title('Explained variance');
-                    figure(24);clf(24);
-                        hold on;
-                        for i=1:60
-                            scatter(coeff(i,1),coeff(i,2),'filled')
-                            text(coeff(i,1),coeff(i,2),analogData.Info.Label(i));
-                        end
-                        %scatter(coeff(:,1),coeff(:,2),'filled')
-                        xlabel('PC-1');
-                        ylabel('PC-2');
-                        title('Loadings');
                 case 0
                     break;
             end
         end
-    %% Load segments of time stamps (Raster plot)
+    %% Load segments of time stamps (spike train)
     elseif rec == 3
         cfg = [];
         cfg.timestamp = []; % channel indexes (1-60)
@@ -182,7 +131,7 @@ while 1
             disp("3 - Pattern of spikes firing at the same time")
             disp("4 - Pattern of spikes firing after a spike within a delta")
             disp("5 - Export to ToolConnect format ")
-            disp("6 - Rasterplot")
+            disp("7 - Import Connectivity matrix from ToolConnect end plot graph")
             disp("0 - Go back ")
             method = input('Choose method: ');
             switch(method)   
@@ -204,6 +153,13 @@ while 1
                 case  6
                     %% Create Rasterplot
                     rasterplot(timeStampData);
+                case  7
+                    %% Import Connectivity matrix from ToolConnect end plot graph
+                    [file, pathname] = uigetfile('*.txt','Select CM file to plot');
+                    cm = load([pathname file]);
+                    if file
+                          G=  dirGraph(cm,timeStampData.Info.Label)
+                    end
                 case 0
                     % Go back to main manu
                     break
