@@ -1,4 +1,4 @@
-function [  ] = heatmapPattern( timeStampData, instantaneous )
+function [ pattern ] = heatmapPattern( timeStampData, instantaneous )
 %heatmapPattern Geneate heatmap of neurons firing within a delta
 %   Takes in a time stamp data object (McsTimeStampStream) 
 %   and generates a heatmap with number of spikes per channel
