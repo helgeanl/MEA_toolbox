@@ -1,12 +1,16 @@
-function [  ] = crossCor( data )
+function crossCor( data )
 %crossCor Cross correlation map from analog data
-%   Create cross correlation map
+%   crossCor(data) takes in a NxM matrix with a timeseries of size N 
+%   and M channels. This is used to calculate and plot the crosscorrelation
+%   between each channel.
+%   
     cc = zeros(60,60);
     xcor = dsp.Crosscorrelator;
-    for chan1Index = 1:numel(data(:,1))
-        for chan2Index = 1:numel(data(:,1))
+    nChannels = size(data(:,2));
+    for chan1Index = 1:nChannels
+        for chan2Index = 1:nChannels
             if chan1Index ~= chan2Index
-                cc(chan1Index,chan2Index) = mean(xcor(data(chan1Index,:),data(chan2Index,:)));
+                cc(chan1Index,chan2Index) = mean(xcor(data(:,chan1Index),data(:,chan2Index)));
             end
         end
     end

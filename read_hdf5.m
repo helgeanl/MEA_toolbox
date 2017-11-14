@@ -18,6 +18,7 @@ clear;
 if ~file % Exit script if error in opening file
     return
 end
+fs = 10000; % Sampling rate in Hz
 
 %% Load data
 %cfg = [];
@@ -30,6 +31,7 @@ duration = dataFile.Recording{1,1}.Duration/1000000 ;
 fprintf('Recording: %s\n',file);
 fprintf('- Date of recording: %s\n', dataFile.Data.Date);
 fprintf('- Duration: %d s\n', duration);
+fprintf('- Sampling rate: %d Hz\n', fs);
 fprintf('- Number of raw data recordings: %d\n',size(dataFile.Recording{1,1}.AnalogStream,2));
 fprintf('- Number of spike trains: %d\n',size(dataFile.Recording{1,1}.SegmentStream,2));
 input('Press ENTER to continue...');
@@ -62,8 +64,8 @@ while 1
                 disp('1 - PCA on spike cutouts')
                 disp('0 - Go back ')
                 method = input('Choose method: ');
-                if ~isnumeric(method)
-                    method = 0;
+                if ~isnumeric(method) || isempty(method)
+                    method = -1;
                 end
                 switch method
                     case 1
@@ -101,7 +103,7 @@ while 1
             % highpass
             %analogData3 = dataFile.Recording{1}.AnalogStream{3}.readPartialChannelData(cfg);
             %plot(analogData3,[]); % plot the analog stream segment
-            data = analogData.ChannelData;
+            data = analogData.ChannelData';
 
 
             %% Choose method on analog data
@@ -113,10 +115,11 @@ while 1
                 disp('3 - Export raw data to .mat')
                 disp('4 - Filter the data with 2nd order butterworth 200 Hz highpass filter')
                 disp('5 - Filter the data with 2nd order butterworth 8-13Hz bandpass filter')
+                disp('6 - Plot PDS of signal')
                 disp('0 - Go back ')
                 method = input('Choose method: ');
-                if ~isnumeric(method)
-                    method = 0;
+                if ~isnumeric(method) || isempty(method)
+                    method = -1;
                 end
                 switch method
                     case 1
@@ -124,7 +127,7 @@ while 1
                         crossCor(data);
                     case 2
                         %% PCA on timeseries
-                        pcaTimeSeries(data,analogData.Info.Label )
+                        pcaTimeSeries(data,analogData.Info.Label );
                     case 3
                         %% Export raw data to .mat
                         [filename, pathname] = uiputfile('*.mat','Save file as');
@@ -134,9 +137,11 @@ while 1
                            save([ pathname filename ],'data');
                         end
                     case 4
-                        data = highpassFilter(2,200,data);
+                        data = highpassFilter(2,500,fs,data);
                     case 5
-                        data = bandpassFilter(2,8,13,data);
+                        data = bandpassFilter(2,8,13,fs,data);
+                    case 6
+                        plotPDS(data(:,26)); %26
                     case 0
                         break;
                 end
@@ -167,16 +172,16 @@ while 1
                 disp('7 - Import Connectivity matrix from ToolConnect end plot graph')
                 disp('0 - Go back ')
                 method = input('Choose method: ');
-                if ~isnumeric(method)
-                    method = 0;
+                if ~isnumeric(method) || isempty(method)
+                    method = -1;
                 end
                 switch(method)   
                     case  1
                         %% Generate heatmap
-                        heatmapSpikes( timeStampData )
+                        heatmapSpikes( timeStampData.TimeStamps,(tEnd-tStart) )
                     case  2
                         %% Generate bar graph of spike count
-                        bargraph( timeStampData )
+                        bargraph( timeStampData.TimeStamps )
                     case 3
                         %% Pattern of spikes firing at the same time
                         pattern = heatmapPattern(timeStampData,true);
@@ -185,7 +190,7 @@ while 1
                         pattern = heatmapPattern(timeStampData,false);
                     case  5
                         %% Export to ToolConnect format
-                        exportToolConnect(timeStampData,dataFile.Recording{1,1}.Duration)
+                        exportToolConnect(timeStampData.TimeStamps,tStart,tEnd,fs)
                     case  6
                         %% Create Rasterplot
                         rasterplot(timeStampData);
@@ -196,7 +201,7 @@ while 1
                            disp('User pressed cancel')
                         else
                            cm = load([pathname filename]);
-                           G =  dirGraph(cm,timeStampData.Info.Label,[]);
+                           dirGraph(cm,0);
                         end
                     case 0
                         % Go back to main manu
