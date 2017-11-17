@@ -4,13 +4,18 @@ function crossCor( data )
 %   and M channels. This is used to calculate and plot the crosscorrelation
 %   between each channel.
 %   
-    cc = zeros(60,60);
+    
     xcor = dsp.Crosscorrelator;
-    nChannels = size(data(:,2));
+    nChannels = size(data,2);
+    cc = zeros(nChannels,nChannels);
     for chan1Index = 1:nChannels
         for chan2Index = 1:nChannels
             if chan1Index ~= chan2Index
-                cc(chan1Index,chan2Index) = mean(xcor(data(:,chan1Index),data(:,chan2Index)));
+                cc(chan1Index,chan2Index) = ...
+                    mean(xcorr(data(:,chan1Index),data(:,chan1Index)));
+                    %mean(xcor(data(:,chan1Index),data(:,chan2Index)));
+                    
+                    
             end
         end
     end

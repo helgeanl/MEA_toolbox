@@ -5,6 +5,6 @@ function index  = getLabelIndex( label )
 %   Labels 12-17 in he first column, 21-28 in the second, ..., 71-78 in the 
 %   seventh, and 82-87 in the last.
     labels = getLabels();
-    index = find(contains(labels,label));
+    index = find(contains(labels,num2str(label)));
 end
 
