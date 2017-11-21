@@ -33,15 +33,15 @@ fs = 10000; % Sampling rate in Hz
 % -> max voltage: +/-2mV
 % -> max time: 30min
 cfg = [];
-cfg.dataType = 'single'; 
+cfg.dataType = 'double'; 
 
 % Load recording info
 dataFile = McsHDF5.McsData([pathname file],cfg);
 duration = dataFile.Recording{1,1}.Duration*1e-6; % microsec -> sec
-
+recordingDate = dataFile.Data.Date;
 clc;
 fprintf('Recording: %s\n',file);
-fprintf('- Date of recording: %s\n', dataFile.Data.Date);
+fprintf('- Date of recording: %s\n', recordingDate);
 fprintf('- Duration: %d s\n', duration);
 fprintf('- Sampling rate: %d Hz\n', fs);
 fprintf('- Number of raw data recordings: %d\n',size(dataFile.Recording{1,1}.AnalogStream,2));
@@ -84,7 +84,7 @@ while 1
                 switch method
                     case 1
                         %% PCA on spike cutouts
-                        pcaSpikeCutout( spikecuts,labels );
+                        [ coeff,score ]=pcaSpikeCutout( spikecuts,labels,15 );
                     case 0
                         break;
                 end
@@ -144,12 +144,7 @@ while 1
                         crossCor(data);
                     case 2
                         %% PCA on timeseries
-                        % Remove ref node as outlier
-                        tempdata = data;
-                        templabels = labels;
-                        tempdata(:,15)=[];
-                        templabels(15)=[];
-                        pcaTimeSeries(tempdata,templabels);
+                        pcaTimeSeries(data,labels,[33 66 36 15]);
                         clear tempdata templabels
                     case 3
                         %% Export raw data to .mat
@@ -199,6 +194,7 @@ while 1
                 disp('3 - Pattern of spikes firing at the same time')
                 disp('4 - Pattern of spikes firing after a spike within a delta')
                 disp('5 - Export to ToolConnect format ')
+                disp('6 - Rasterplot ')
                 disp('7 - Import Connectivity matrix from ToolConnect end plot graph')
                 disp('0 - Go back ')
                 method = input('Choose method: ');
@@ -226,11 +222,13 @@ while 1
                             end
                         end
                         pattern = heatmapPattern(timeStamps,labels,delta);
+                        dlmwrite('test.txt',pattern)
                         clear delta;
                     case  5
                         %% Export to ToolConnect format
-                        exportToolConnect(timeStamps,tStart,tEnd,fs)
+                        exportToolConnect(timeStamps,tStart,tEnd,fs,recordingDate)
                     case  6
+                        
                         %% Create Rasterplot
                         rasterplot(timeStampData);
                     case  7
