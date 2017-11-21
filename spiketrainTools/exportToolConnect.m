@@ -1,4 +1,4 @@
-function exportToolConnect( timeStamps,tStart,tEnd,fs)
+function exportToolConnect( timeStamps,tStart,tEnd,fs,experiment)
 %exportToolConnect Export spike train data to ToolConnect format
 %   exportToolConnect(timeStamps, nSamples) will export the spike 
 %   timestamps to one file for each electrode channel, with a header 
@@ -27,8 +27,12 @@ function exportToolConnect( timeStamps,tStart,tEnd,fs)
         disp('User pressed cancel')
         return;
     end
-    [~,dirName] = fileparts(path);
-     
+    %[~,dirName] = fileparts(path);
+    mkdir(path,experiment);
+    mkdir([path '/' experiment],'spikes');
+    mkdir([path '/' experiment '/spikes'],[num2str(tStart) '-' num2str(tEnd)]);
+    datapath = [path '/' experiment '/spikes/' [num2str(tStart) '-' num2str(tEnd)]];
+    
     for index = 1:length(timeStamps)
         % Replace channel label 'Ref' with '15'
         if index == 15
@@ -41,8 +45,8 @@ function exportToolConnect( timeStamps,tStart,tEnd,fs)
         % compatible format with ToolConnect
         spikeData = timeStamps{index}./100-tStart*fs;
         header = num2str((tEnd-tStart)*fs);
-
-        fid=fopen([path '\' dirName '_' label '.txt'],'w');
+        fid=fopen([datapath '\' experiment '_' label '.txt'],'w');
+        %fid=fopen([path '\' dirName '_' label '.txt'],'w');
         fprintf(fid, [ header ' \n']);
         fprintf(fid, '%d  \n', spikeData');
         fclose(fid);
