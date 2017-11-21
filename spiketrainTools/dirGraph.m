@@ -1,4 +1,4 @@
-function dirGraph(cm,n, highlight)
+function [degree, entropy] = dirGraph(cm,n, highlight)
 %dirGraph Plot directed graph from connectivity matrix
 %   dirGraph(cm,n, highlight) input connectivity matrix cm, 
 %   with sources in the rows and targets in the columns.
@@ -8,8 +8,7 @@ function dirGraph(cm,n, highlight)
 %   to the node with maximum inputs and outputs.
 %
 %   Use 'highlight' to select which colormap to use:
-%       highlight = 0 -> Colormap on edge weights (default)
-%       highlight = 1 -> Colormap on node inputs
+%       highlight = 1 -> Colormap on node inputs (default)
 %       highlight = 2 -> Colormap on node outputs
     
     m = mean2(cm); 
@@ -33,7 +32,7 @@ function dirGraph(cm,n, highlight)
     weights =[];
     for i=1:60
         for j=1:60
-            if cm(i,j)>(m+n*sd)
+            if cm(i,j)>(m+n*sd) && cm(i,j)>0
                 s = [s i];
                 t = [t j];
                 weights = [weights ; cm(i,j)];
@@ -62,37 +61,52 @@ function dirGraph(cm,n, highlight)
     G = digraph(s,t,[],labels);
     inDeg = indegree(G);
     outDeg= outdegree(G);
+    degree = length(weights);
+    entropy = sum(weights);
     
     % Create new figure with specified size 
-    figure('position', [100, 100, 900, 800]) 
-    p = plot(G,'XData',x,'YData',y,'EdgeAlpha',0.6,'ArrowSize',15);
-    set(gca,'Ydir','reverse')
-
-    p.LineWidth = 2*weights/max(weights);
-    p.MarkerSize=20*(outDeg+inDeg+1)/(max(outDeg+inDeg+1));
+    figure('position', [100, 100, 900, 800]) ;
+    hAxesEdge = axes;
+    hAxesEdge.XAxis.Visible = 'off';
+    hAxesEdge.YAxis.Visible = 'off';
+    cmap = colormap('copper');
+    cmap = flipud(cmap);
+    colormap(hAxesEdge,cmap);
     
-    defaultColor = [0.5725 0.5725 0.5725];
-    if  highlight == 1
-        colormap('summer');
-        cb = colorbar;
-        xlabel(cb,'Number of inputs');
-        p.EdgeColor = defaultColor;
-        p.NodeCData = inDeg;
-    elseif highlight == 2
-        colormap('summer');
-        cb = colorbar;
-        xlabel(cb,'Number of outputs');
-        p.EdgeColor = defaultColor;
-        p.NodeCData = outDeg;
+    % Plot graph edges
+    h(1) = plot(hAxesEdge,G,'XData',x,'YData',y,'EdgeAlpha',0.6,'ArrowSize',15);
+    title('Functional Connectivity')
+    set(gca,'Ydir','reverse')
+    h(1).LineWidth = 2*weights/max(weights);
+    h(1).EdgeCData = weights;
+    
+    % Plot grah nodes in a new axis on top of the first 
+    hAxesNode = axes;
+    colormap(hAxesNode,'summer');
+    h(2) = plot(G,'XData',x,'YData',y,'EdgeAlpha',0);
+    set(gca,'Ydir','reverse')
+    h(2).MarkerSize=20*(outDeg+inDeg+1)/(max(outDeg+inDeg+1));
+    
+    if  highlight == 2
+        h(2).NodeCData = outDeg;
     else
-        cmap = colormap('gray');
-        cmap = flipud(cmap);
-        colormap(cmap);
-        cb = colorbar;
-        xlabel(cb,'Edge weight');
-        p.NodeColor = defaultColor;
-        p.EdgeCData = weights;
+        h(2).NodeCData = inDeg;
     end
+    set(gca, 'Color', 'none')
+   
+    cb1 = colorbar(hAxesEdge,'Location','eastoutside');
+    xlabel(cb1,'Edge weights');
+    cb2 = colorbar(hAxesNode,'Location','southoutside');
+    xlabel(cb2,'Number of inputs');
+    set([hAxesEdge,hAxesNode],'Position',[.08 .16 .78 .78]);
+
+    
+    hAxesNode.XAxis.Visible = 'off';
+    hAxesNode.YAxis.Visible = 'off';
+    set(hAxesEdge,'xtick',[])
+    set(hAxesEdge,'ytick',[])
+
+
 end
 
 
