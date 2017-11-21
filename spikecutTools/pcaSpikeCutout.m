@@ -1,9 +1,14 @@
-function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikeCuts,labels )
+function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,labels,outliers )
 %pcaSpikeCutout PCA on Spike Cutouts
 %   Detailed explanation goes here
-
-    numChannels = length(spikeCuts);
-    spikemat = cell2mat(spikeCuts);
+    
+    % Remove outliers
+    outlierIndexes = getLabelIndex(outliers,labels);
+    spikecuts(outlierIndexes)=[];
+    labels(outlierIndexes)=[];
+    
+    numChannels = length(spikecuts);
+    spikemat = cell2mat(spikecuts);
     [coeff,score,latent,tsquared,explained,mu] = pca(spikemat);
     figure;
         exp = cumsum(explained);
@@ -15,7 +20,13 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikeCuts,
         title('Spike Cutouts - Explained variance');
     figure;
         hold on;
-        scatter3(score(:,1),score(:,2),score(:,3),'filled')
+        % Use interpolation if curvefitting toolbox is installed
+        % if not use plot3 as default
+        if ~isempty(which('cscvn'))
+            fnplt(cscvn(score(:,1:3)'),'r',2)
+        else
+            plot3(score(:,1),score(:,2),score(:,3))
+        end
         grid on
         for i=1:size(spikemat,1)
             text(double(score(i,1)),double(score(i,2)),double(score(i,3)),...
@@ -24,14 +35,15 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikeCuts,
         title('Spike Cutouts - Scores')
         xlabel(['PC-1 (' num2str(explained(1)) '%)']);
         ylabel(['PC-2 (' num2str(explained(2)) '%)']);
-        zlabel(['PC-2 (' num2str(explained(3)) '%)']);
+        zlabel(['PC-3 (' num2str(explained(3)) '%)']);
         view(3);
+        
     figure;
         indexStart = 1;
         indexEnd = 1;
         s = [];
         for i=1:numChannels
-            numSpikes = size(spikeCuts{i},2);
+            numSpikes = size(spikecuts{i},2);
             indexEnd = indexEnd + numSpikes ;
             num = numel(indexStart:indexEnd)-1;
             s = [s ones(1,num)*i];
@@ -50,7 +62,12 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikeCuts,
         title('Spike Cutouts - Loadings');
         box on;
         view(3);
-
+        
+    figure
+        scatter(mu./1e6,s,'filled')
+        xlabel('Voltage [\muV]')
+        set(gca, 'YTick', 1:length(labels), 'YTickLabel', labels)
+        title('Estimated mean of each spike cutout');
 end
 
 function cluster(coeff)

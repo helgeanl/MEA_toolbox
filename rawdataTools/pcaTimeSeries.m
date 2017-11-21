@@ -1,7 +1,9 @@
-function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogData ,labels)
+function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogData ,labels,outliers)
 %pcaTimeSeries PCA on timeseries
-
-
+    outlierIndexes = getLabelIndex(outliers,labels);
+    analogData(:,outlierIndexes)=[];
+    labels(outlierIndexes)=[];
+    %labels = sort(labels);
     [coeff,score,latent,tsquared,explained,mu] = pca(analogData,'Centered',true);
     
     figure;
@@ -17,7 +19,7 @@ function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogDat
         xlim([1 10]);
         xlabel('Principal components');
         ylabel('x-variance [%]');
-        title('Timeseries - Explained variance');
+        title('Raw data - Explained variance');
     figure;
         hold on;
         scatter3(coeff(:,1),coeff(:,2),coeff(:,3),'filled')
@@ -32,6 +34,30 @@ function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogDat
         title('Raw data - Loadings');
         box on;
         view(3);
-
+        
+    figure
+        stem(1:length(labels),mu./1e6)
+        ylabel('Voltage [\muV]')
+        set(gca, 'XTick', 1:length(labels), 'XTickLabel', labels)
+        xtickangle(90);
+        title('Estimated mean of each channel');
+    figure;
+        plot(tsquared)
+        title('Hotelling''s T-squared statistic');
+        
+    figure;
+        [idx,C,sumd,D] = kmeans(analogData',4);
+        imagesc(D)
+        colorbar
+        set(gca, 'YTick', 1:length(labels), 'YTickLabel', labels)
+        %set(gca, 'XTick', 1:size(D,2))
+        %grid on;
+        title('k-means distance to every centroid')
+        
+    figure;
+        bar(1:length(labels),idx)
+        set(gca, 'XTick', 1:length(labels), 'XTickLabel', labels)
+        xtickangle(90);
+        title('k-means clustering')
 end
 
