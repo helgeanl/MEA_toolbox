@@ -6,7 +6,7 @@ function [ pattern ] = heatmapPattern( timeStamps,labels, delta )
         delta = 0;
     end
     %timeStamps = timeStampData.TimeStamps;
-    pattern = zeros(60,60);
+    pattern = zeros(length(labels),length(labels));
     for chan1Index = 1:numel(timeStamps)
         for spikeTime = timeStamps{chan1Index}
             for chan2Index = 1:numel(timeStamps)
