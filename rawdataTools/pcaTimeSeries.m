@@ -1,25 +1,44 @@
-function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogData ,labels,outliers)
+function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogData ,labels,outliers,numComponents)
 %pcaTimeSeries PCA on timeseries
+%   [ coeff,score,latent,tsquared,explained,mu ] = 
+%               pcaTimeSeries( analogData ,labels,outliers,numComponents)
     outlierIndexes = getLabelIndex(outliers,labels);
     analogData(:,outlierIndexes)=[];
     labels(outlierIndexes)=[];
-    %labels = sort(labels);
-    [coeff,score,latent,tsquared,explained,mu] = pca(analogData,'Centered',true);
+    [coeff,score,latent,tsquared,explained,mu] = pca(analogData,'Centered',true,'NumComponents',numComponents);
     
     figure;
-        scatter(score(:,1),score(:,2),'filled');
+        scatter3(score(:,1),score(:,2),score(:,3),'filled');
         title('Raw data - Scores')
         xlabel(['PC-1 (' num2str(explained(1)) '%)']);
         ylabel(['PC-2 (' num2str(explained(2)) '%)']);
+        zlabel(['PC-3 (' num2str(explained(3)) '%)']);
+        view(3);
+
+    M = size(score,2);
+    N = size(score,1);
+    time = linspace(0,(N-1)./1e4,N);
+    for i = 0:5:M-1
+       figure
+       for j = 1:min(5,M-i) 
+           subplot(5,1,j) 
+           plot(time,score(:,i+j).*1e-6); 
+           set(gca,'FontSize',8,'XLim',[0 time(end)]);
+           title(['Score nr. ' num2str(i+j) ' (' num2str(explained(i+j)) '%)'])
+       end
+       xlabel('Time [s]');
+    end
 
     figure;
         exp = cumsum(explained);
         plot(exp ,'-o');
         ylim([0 100]);
-        xlim([1 10]);
+        xlim([1 numComponents]);
         xlabel('Principal components');
         ylabel('x-variance [%]');
+        set(gca, 'XTick', 1:numComponents)
         title('Raw data - Explained variance');
+       
     figure;
         hold on;
         scatter3(coeff(:,1),coeff(:,2),coeff(:,3),'filled')
@@ -34,7 +53,20 @@ function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogDat
         title('Raw data - Loadings');
         box on;
         view(3);
-        
+   figure;
+        hold on;
+        scatter3(coeff(:,4),coeff(:,5),coeff(:,6),'filled')
+        grid on;
+        x = double(coeff(:,4));
+        y = double(coeff(:,5));
+        z = double(coeff(:,6));
+        text(x,y,z, labels, 'horizontal','left', 'vertical','bottom');
+        xlabel(['PC-4 (' num2str(explained(4)) '%)']);
+        ylabel(['PC-5 (' num2str(explained(5)) '%)']);
+        zlabel(['PC-6 (' num2str(explained(6)) '%)']);
+        title('Raw data - Loadings');
+        box on;
+        view(3);
     figure
         stem(1:length(labels),mu./1e6)
         ylabel('Voltage [\muV]')
@@ -42,22 +74,24 @@ function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogDat
         xtickangle(90);
         title('Estimated mean of each channel');
     figure;
-        plot(tsquared)
+        tsquaredreduced = mahal(score,score);
+        plot((0:(length(tsquaredreduced)-1))./10000,tsquaredreduced)
+        xlabel('Time [s]')
         title('Hotelling''s T-squared statistic');
         
-    figure;
-        [idx,C,sumd,D] = kmeans(analogData',4);
-        imagesc(D)
-        colorbar
-        set(gca, 'YTick', 1:length(labels), 'YTickLabel', labels)
-        %set(gca, 'XTick', 1:size(D,2))
-        %grid on;
-        title('k-means distance to every centroid')
-        
-    figure;
-        bar(1:length(labels),idx)
-        set(gca, 'XTick', 1:length(labels), 'XTickLabel', labels)
-        xtickangle(90);
-        title('k-means clustering')
+%     figure;
+%         [idx,C,sumd,D] = kmeans(analogData',4);
+%         imagesc(D)
+%         colorbar
+%         set(gca, 'YTick', 1:length(labels), 'YTickLabel', labels)
+%         %set(gca, 'XTick', 1:size(D,2))
+%         %grid on;
+%         title('k-means distance to every centroid')
+%         
+%     figure;
+%         bar(1:length(labels),idx)
+%         set(gca, 'XTick', 1:length(labels), 'XTickLabel', labels)
+%         xtickangle(90);
+%         title('k-means clustering')
 end
 

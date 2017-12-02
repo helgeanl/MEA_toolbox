@@ -1,6 +1,6 @@
-function [degree, entropy] = dirGraph(cm,n, highlight)
-%dirGraph Plot directed graph from connectivity matrix
-%   dirGraph(cm,n, highlight) input connectivity matrix cm, 
+function [degree, entropy] = dirgraph(cm,labels,n,cfg)
+%dirgraph Plot directed graph from connectivity matrix
+%   [degree, entropy] = dirgraph(cm,labels,n,cfg) input connectivity matrix cm, 
 %   with sources in the rows and targets in the columns.
 %   The threshold is defined as the mean of the connectivity matrix pluss
 %   n times the standard deviation. The size of each node is determined
@@ -22,8 +22,11 @@ function [degree, entropy] = dirGraph(cm,n, highlight)
     if isempty(n)
         n =0;
     end
-    labels = getLabels();
-    labels{15}='15'; % Switch out 'Ref' with '15' to be able to sort
+    % Replace channel label 'Ref' with '15'
+    refIndex = find(contains(labels,'Ref'));
+    if refIndex ~= 0 
+        labels{refIndex} = '15'; 
+    end
     labels = sort(labels);
 
     % Find sources and targets in connectivity matrix   
@@ -75,7 +78,9 @@ function [degree, entropy] = dirGraph(cm,n, highlight)
     
     % Plot graph edges
     h(1) = plot(hAxesEdge,G,'XData',x,'YData',y,'EdgeAlpha',0.6,'ArrowSize',15);
-    title('Functional Connectivity')
+    if isfield(cfg, 'title')
+        title(cfg.title)
+    end
     set(gca,'Ydir','reverse')
     h(1).LineWidth = 2*weights/max(weights);
     h(1).EdgeCData = weights;
@@ -87,10 +92,14 @@ function [degree, entropy] = dirGraph(cm,n, highlight)
     set(gca,'Ydir','reverse')
     h(2).MarkerSize=20*(outDeg+inDeg+1)/(max(outDeg+inDeg+1));
     
-    if  highlight == 2
-        h(2).NodeCData = outDeg;
+    if isfield(cfg, 'highlight') 
+        if cfg.highlight == 2
+            h(2).NodeCData = outDeg;
+        else
+            h(2).NodeCData = inDeg;
+        end
     else
-        h(2).NodeCData = inDeg;
+            h(2).NodeCData = inDeg;
     end
     set(gca, 'Color', 'none')
    
@@ -99,14 +108,11 @@ function [degree, entropy] = dirGraph(cm,n, highlight)
     cb2 = colorbar(hAxesNode,'Location','southoutside');
     xlabel(cb2,'Number of inputs');
     set([hAxesEdge,hAxesNode],'Position',[.08 .16 .78 .78]);
-
     
     hAxesNode.XAxis.Visible = 'off';
     hAxesNode.YAxis.Visible = 'off';
     set(hAxesEdge,'xtick',[])
     set(hAxesEdge,'ytick',[])
-
-
 end
 
 

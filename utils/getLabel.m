@@ -6,7 +6,11 @@ function label  = getLabel( index,labels )
 %   seventh, and 82-87 in the last.
    % labels = getLabels();
    
-    for i=1:length(index)
-        label{i} = labels{index(i)};
+    if length(index) > 1
+        for i=1:length(index)
+            label{i} = labels{index(i)};
+        end
+    else
+        label = labels{index};
     end
 end

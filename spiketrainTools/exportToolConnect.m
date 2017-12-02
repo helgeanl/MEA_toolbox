@@ -1,6 +1,6 @@
-function exportToolConnect( timeStamps,tStart,tEnd,fs,experiment)
+function exportToolConnect( timeStamps,labels,tStart,tEnd,fs,experiment)
 %exportToolConnect Export spike train data to ToolConnect format
-%   exportToolConnect(timeStamps, nSamples) will export the spike 
+%   exportToolConnect( timeStamps,labels,tStart,tEnd,fs,experiment) will export the spike 
 %   timestamps to one file for each electrode channel, with a header 
 %   containing the number of samples (nSamples) in the recording and 
 %   a '0' as an end marker. 
@@ -27,26 +27,24 @@ function exportToolConnect( timeStamps,tStart,tEnd,fs,experiment)
         disp('User pressed cancel')
         return;
     end
-    %[~,dirName] = fileparts(path);
+
     mkdir(path,experiment);
     mkdir([path '/' experiment],'spikes');
-    mkdir([path '/' experiment '/spikes'],[num2str(tStart) '-' num2str(tEnd)]);
-    datapath = [path '/' experiment '/spikes/' [num2str(tStart) '-' num2str(tEnd)]];
-    
+    mkdir([path '/' experiment '/spikes'],[num2str(round(tStart)) '-' num2str(round(tEnd))]);
+    datapath = [path '/' experiment '/spikes/' num2str(tStart) '-' num2str(tEnd)];
+
     for index = 1:length(timeStamps)
-        % Replace channel label 'Ref' with '15'
-        if index == 15
+        label = getLabel(index,labels);
+        if label == 'Ref'
             label = '15';
-        else
-            label = getLabel(index);
         end
         % Multichannel Systems record the timestamps in microseconds,
-        % with a sampling every 0.1ms, so devide by 100 to get a 
-        % compatible format with ToolConnect
-        spikeData = timeStamps{index}./100-tStart*fs;
+        % with a tick of 100 us per sample with a sampling frequency of 10 000 Hz,
+        % while Toolconnect expects a tick size of 1. Multiplying with fs 
+        % and dividing with one million convert the tick size to one.
+        spikeData = timeStamps{index}.*(fs/1e6)-tStart*fs;
         header = num2str((tEnd-tStart)*fs);
         fid=fopen([datapath '\' experiment '_' label '.txt'],'w');
-        %fid=fopen([path '\' dirName '_' label '.txt'],'w');
         fprintf(fid, [ header ' \n']);
         fprintf(fid, '%d  \n', spikeData');
         fclose(fid);

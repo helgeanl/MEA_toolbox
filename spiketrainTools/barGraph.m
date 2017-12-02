@@ -1,4 +1,4 @@
-function barGraph(timeStamps)
+function barGraph(timeStamps,labels)
 %barGraph Generate bar graph of spike count
 %   barGraph(timeStamps) takes in a cell array with 60 elements 
 %   containing the spike data for each channel, and generates a 
@@ -11,7 +11,9 @@ function barGraph(timeStamps)
     end
     figure;
     bar(bargraph);
-    xlim([1 nChannels])
+    xlim([0 nChannels+1])
+    set(gca, 'XTick', 1:length(labels), 'XTickLabel', labels)
+    xtickangle(90);
     title('Number of spikes per electrode')
 end
 

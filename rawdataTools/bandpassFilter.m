@@ -1,9 +1,9 @@
 function [ y ] = bandpassFilter( n,w1, w2,fs,x )
 %bandpassFilter Filter signal with nth-order Butterworth bandpass filter
-%   y  = bandpassFilter(n,wc,fs,x) filters the data in column vector x with  
+%   y  = bandpassFilter(n,w1, w2,fs,x) filters the data in column vector x with  
 %   a bandpass butterworth filter of order n.
 %
-%   Y = bandpassFilter(n,wc,fs,X) filters the data of each column in 
+%   Y = bandpassFilter(n,w1, w2,fs,X) filters the data of each column in 
 %   matrix X with a bandpass butterworth filter of order n. 
 %
 %   Both cases use respectively a lower and higher cutoff frequency 

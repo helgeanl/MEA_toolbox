@@ -7,6 +7,6 @@ function [  ] = rasterplot( timeStampData )
     figure;
     plot(timeStampData,[]); 
     title('Rasterplot');
-    ylim([1 60]);
+    ylim([0 length(timeStampData.TimeStamps)+1]);
 end
 
