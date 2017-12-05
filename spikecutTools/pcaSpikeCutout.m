@@ -76,10 +76,8 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,
         title('Spike Cutouts - Loadings');
         box on;
         view(3);
-        
     figure
         scatter(mu./1e6,s,'filled')
-        xlabel('Voltage [\muV]')
         set(gca, 'YTick', 1:length(labels), 'YTickLabel', labels)
         title('Estimated mean of each spike cutout');
 end

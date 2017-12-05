@@ -23,8 +23,8 @@ function index  = getLabelIndex( label,labels )
     else
         index = zeros(length(label),1);
         for i=1:length(label)
-            if strcmp(label(i),'ref')
-                label(i) = '15';
+            if strcmp(label{i},'ref')
+                label{i} = '15';
             end
             find(contains(labels,label(i)));
             index(i) = find(contains(labels,label(i)));

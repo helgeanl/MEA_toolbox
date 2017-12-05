@@ -144,6 +144,7 @@ while 1
             end
             analogData = dataFile.Recording{1}.AnalogStream{stream}.readPartialChannelData(cfg);
             data = analogData.ChannelData';
+            time = McsHDF5.TickToSec(analogData.ChannelDataTimeStamps);
             labels = analogData.Info.Label;
 
             %% Choose method on analog data
@@ -168,7 +169,7 @@ while 1
                         crosscor(data,labels);
                     case 2
                         % PCA on timeseries
-                        [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries(data,labels,15,5);
+                        [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries(data,labels,15,8);
                     case 3
                         % Export raw data to .mat
                         [filename, pathname] = uiputfile('*.mat','Save file as');
