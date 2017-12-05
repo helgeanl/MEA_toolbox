@@ -74,8 +74,7 @@ function [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries( analogDat
         xtickangle(90);
         title('Estimated mean of each channel');
     figure;
-        tsquaredreduced = mahal(score,score);
-        plot((0:(length(tsquaredreduced)-1))./10000,tsquaredreduced)
+        plot((0:(length(tsquared)-1))./10000,tsquared)
         xlabel('Time [s]')
         title('Hotelling''s T-squared statistic');
         

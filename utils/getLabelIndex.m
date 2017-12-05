@@ -10,24 +10,24 @@ function index  = getLabelIndex( label,labels )
 %   Labels 12-17 in he first column, 21-28 in the second, ..., 71-78 in the 
 %   seventh, and 82-87 in the last.
 
+    refIndex = find(contains(labels,'Ref'));
+    if refIndex ~= 0 
+        labels{refIndex} = '15'; 
+    end
+    
     if isnumeric(label)
         index = zeros(length(label),1);
         for i=1:length(label)
-            if label(i)==15
-                index(i) = find(contains(labels,'Ref'));
-            else
-                index(i) = find(contains(labels,num2str(label(i))));
-            end
+            index(i) = find(contains(labels,num2str(label(i))));
         end 
     else
         index = zeros(length(label),1);
         for i=1:length(label)
-            if strcmp(label(i),'15')|| strcmp(label(i),'ref')
-                index(i) = find(contains(labels,'Ref'));
-            else
-                find(contains(labels,label(i)));
-                index(i) = find(contains(labels,label(i)));
+            if strcmp(label(i),'ref')
+                label(i) = '15';
             end
+            find(contains(labels,label(i)));
+            index(i) = find(contains(labels,label(i)));
         end
     end
     

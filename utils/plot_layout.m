@@ -16,7 +16,7 @@ function plot_layout(channels,labels,cfg)
     if refIndex ~= 0 
         labels{refIndex} = '15'; % Switch out 'Ref' with '15' to be able to sort
     end
-    labels = sort(labels)
+    labels = sort(labels);
     
     % Find position of each node
     label = 11;

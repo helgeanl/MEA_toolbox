@@ -34,7 +34,12 @@ cfg = [];
 cfg.dataType = 'double'; 
 
 % Load recording info
-dataFile = McsHDF5.McsData([pathname file],cfg);
+try
+    dataFile = McsHDF5.McsData([pathname file],cfg);
+catch
+    fprintf(2,'This is not a valid Mcs HDF5 file!\n')
+    return
+end
 duration = double(dataFile.Recording{1,1}.Duration)*1e-6; % microsec -> sec
 recordingDate = dataFile.Data.Date;
 if contains(recordingDate,'?')
@@ -50,10 +55,14 @@ if ~isempty(dataFile.Recording{1}.AnalogStream{1})
 elseif ~isempty(dataFile.Recording{1}.TimeStampStream{1})
     tick = dataFile.Recording{1}.TimeStampStream{1}.Info.Tick(1);
     fs = 1/(double(tick)*1e-6);
+elseif ~isempty(app.dataFile.Recording{1}.SegmentStream{1})
+    tick = app.dataFile.Recording{1}.SegmentStream{1}.SourceInfoChannel.Tick(1);
+    app.samplingrate = 1/(double(tick)*1e-6);
 else
-    fs = -1; % Sampling rate in Hz
+    fprintf(2,'File format is incompatible with this toolbox!\n')
+    return
 end
-%tempData = dataFile.Recording{1}.TimeStampStream{1}.readPartialTimeStampData(cfg);
+
 
 clc;
 fprintf('Recording: %s\n',file);
@@ -85,11 +94,7 @@ while 1
             spikecutData = dataFile.Recording{1}.SegmentStream{1}.readPartialSegmentData(cfg);
             spikecuts = spikecutData.SegmentData;
             labels = spikecutData.Info.Label;
-            %plot(spikeCuts,[]); % plot the analog stream segment
-            %for i = 1:length(spikeCuts.SegmentData)
-            %    spikeCut = spikeCuts.SegmentData{1,i};
-            %    save(['spikedata/ch' num2str(i) '.mat' ],'spikeCut');
-            %end
+
             %% Choose method on spike cutouts
             while 1
                 clc;
@@ -103,7 +108,7 @@ while 1
                 switch reply
                     case 1
                         % PCA on spike cutouts
-                        [ coeff,score ]=pcaSpikeCutout( spikecuts,labels,15 );
+                        [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,labels,15 ,6);
                     case 0
                         break;
                 end
@@ -138,7 +143,6 @@ while 1
                 stream = 1;
             end
             analogData = dataFile.Recording{1}.AnalogStream{stream}.readPartialChannelData(cfg);
-            %plot(analogData3,[]); % plot the analog stream segment
             data = analogData.ChannelData';
             labels = analogData.Info.Label;
 
@@ -180,7 +184,7 @@ while 1
                     case 6
                         plotPDS(data(:,26),'26'); %26
                     case 7
-                        	
+                        plotEnergy(data,labels,fs);	
                     case 0
                         break;
                 end
@@ -214,8 +218,9 @@ while 1
                 disp('2 - Bargraph with number of spikes')
                 disp('3 - Connectivity from spikes firing after a spike within a delta')
                 disp('4 - Export to ToolConnect format ') 
-                disp('5 - Import Connectivity matrix from ToolConnect end plot graph')
-                disp('6 - Rasterplot ')
+                disp('5 - Export to SpiCoDyn format ')
+                disp('6 - Import Connectivity matrix from ToolConnect end plot graph')
+                disp('7 - Rasterplot ')
                 disp('0 - Go back ')
                 reply = input('Choose method: ');
                 if ~isnumeric(reply) || isempty(reply)
@@ -244,15 +249,18 @@ while 1
                         % Export to ToolConnect format
                         exportToolConnect(timeStamps,labels,tStart,tEnd,fs,recordingDate)
                     case  5
+                        % Export to SpiCoDyn format
+                        exportSpiCoDyn(timeStamps,labels,tStart,tEnd,fs,recordingDate)
+                    case  6
                         % Import Connectivity matrix from ToolConnect end plot graph
                         [filename, pathname] = uigetfile('*.txt','Select CM file to plot');
                         if isequal(filename,0) || isequal(pathname,0)
                            disp('User pressed cancel')
                         else
                            cm = load([pathname filename]);
-                           dirgraph(cm',labels,0,0);
+                           dirgraph(cm,labels,0,0);
                         end
-                    case  6
+                    case 7
                         % Create Rasterplot
                         rasterplot(timeStampData);
                     case 0

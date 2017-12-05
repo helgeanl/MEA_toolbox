@@ -1,4 +1,4 @@
-function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,labels,outliers )
+function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,labels,outliers,numComponents )
 %pcaSpikeCutout PCA on Spike Cutouts
 %   Detailed explanation goes here
     
@@ -9,7 +9,7 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,
     
     numChannels = length(spikecuts);
     spikemat = cell2mat(spikecuts);
-    [coeff,score,latent,tsquared,explained,mu] = pca(spikemat);
+    [coeff,score,latent,tsquared,explained,mu] = pca(spikemat,'Centered',true,'NumComponents',numComponents);
     figure;
         exp = cumsum(explained);
         plot(exp ,'-o');
@@ -38,6 +38,20 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,
         zlabel(['PC-3 (' num2str(explained(3)) '%)']);
         view(3);
         
+    M = size(score,2);
+    N = size(score,1);
+    time = linspace(0,(N-1)./1e4,N);
+    for i = 0:3:M-1
+       figure
+       for j = 1:min(3,M-i) 
+           subplot(3,1,j) 
+           plot(time,score(:,i+j).*1e-6); 
+           set(gca,'FontSize',8,'XLim',[0 time(end)]);
+           title(['Score nr. ' num2str(i+j) ' (' num2str(explained(i+j)) '%)'])
+       end
+       xlabel('Time [s]');
+    end
+    
     figure;
         indexStart = 1;
         indexEnd = 1;
@@ -70,6 +84,3 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,
         title('Estimated mean of each spike cutout');
 end
 
-function cluster(coeff)
-    
-end

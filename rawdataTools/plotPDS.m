@@ -4,7 +4,7 @@ function  plotPDS( signal,fs,name)
     figure;
     [P,f] = periodogram(signal,[],[],fs,'power');
     plot(f,P,'k')
-    %xlim([0 40])
+
     grid
     ylabel('Power')
     xlabel('Frequency [Hz]')
