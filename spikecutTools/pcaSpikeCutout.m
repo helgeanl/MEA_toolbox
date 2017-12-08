@@ -1,15 +1,26 @@
-function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,labels,outliers,numComponents )
+function varargout = pcaSpikeCutout( spikecuts,labels,outliers,numComp )
 %pcaSpikeCutout PCA on Spike Cutouts
-%   Detailed explanation goes here
+%   pcaSpikeCutout( SPIKECUTS,LABELS,OUTLIERS,NUMCOMP )
+%   Plot loadings with the principal components on the x,y, and z axis. 
+%   E.g. PC 1,2, and 3 in one figure, and PC 4,5, and 6 in another figure. 
+
+%   [COEFF, SCORE, LATENT, TSQUARED, EXPLAINED, MU] = pcaSpikeCutout( SPIKECUTS,LABELS,OUTLIERS,NUMCOMP )
+%   returns the principal component coefficients(loadings), scores, latent
+%   variables (PC variance/ eigenvalues of the covariance matrix), Hotelling's T-squared
+%   statistic for each sample with in the full space (not only for the PCs 
+%   that is specified by numComp), explained variance as a vector with the
+%   percentages of total explained variance, and estimated mean from centering
+%   the signal.
     
     % Remove outliers
     outlierIndexes = getLabelIndex(outliers,labels);
     spikecuts(outlierIndexes)=[];
     labels(outlierIndexes)=[];
-    
     numChannels = length(spikecuts);
     spikemat = cell2mat(spikecuts);
-    [coeff,score,latent,tsquared,explained,mu] = pca(spikemat,'Centered',true,'NumComponents',numComponents);
+    numComp = min(numComp,size(spikemat,2));
+    
+    [coeff,score,latent,tsquared,explained,mu] = pca(spikemat,'Centered',true,'NumComponents',numComp);
     figure;
         exp = cumsum(explained);
         plot(exp ,'-o');
@@ -80,5 +91,18 @@ function [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,
         scatter(mu./1e6,s,'filled')
         set(gca, 'YTick', 1:length(labels), 'YTickLabel', labels)
         title('Estimated mean of each spike cutout');
+        
+    % Specify the output variables
+    nout = max(nargout,1);
+    tempOut{1} = coeff;
+    tempOut{2} = score;
+    tempOut{3} = latent;
+    tempOut{4} = tsquared;
+    tempOut{5} = explained;
+    tempOut{6} = mu;
+    
+    for k = 1:nout
+        varargout{k} = tempOut{k};
+    end
 end
 

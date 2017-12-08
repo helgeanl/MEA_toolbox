@@ -1,15 +1,13 @@
-function energy = plot_energy(data,labels,fs)
-%dirGraph Plot directed graph from connectivity matrix
-%   dirGraph(cm,n, highlight) input connectivity matrix cm, 
-%   with sources in the rows and targets in the columns.
-%   The threshold is defined as the mean of the connectivity matrix pluss
-%   n times the standard deviation. The size of each node is determined
-%   as the sum of the number of outputs and inputs to the node, relative 
-%   to the node with maximum inputs and outputs.
+function ENERGY = plotEnergy(data,labels,fs)
+%plotEnergy Plot the total energy from each electrode
+%   ENERGY = plotEnergy(DATA,LABELS,FS) returns a vector containing the
+%   energy in each electrode, sorted from lowest to highest electrode. 
+%   
+%   DATA is a NxM matrix where N is the timeseries and M electrodes. 
+%   LABELS is a cell array containing all the string labels in the
+%   recording. FS is the sampling rate.
 %
-%   Use 'highlight' to select which colormap to use:
-%       highlight = 1 -> Colormap on node inputs (default)
-%       highlight = 2 -> Colormap on node outputs
+%   The energy for each electrode is plotted on the 60MEA layout.
     
     % Replace channel label 'Ref' with '15'
     refIndex = find(contains(labels,'Ref'));
@@ -20,11 +18,11 @@ function energy = plot_energy(data,labels,fs)
     
     data = data(:,s);
     for i=1:length(labels)
-        energy(i) = sum(periodogram(data(:,i),[],[],fs,'power'));
+        ENERGY(i) = sum(periodogram(data(:,i),[],[],fs,'power'));
     end
     cfg = [];
     cfg.title = 'Energy';
-    plot_layout(energy,labels,cfg);
+    plot_layout(ENERGY,labels,cfg);
     
    
 end

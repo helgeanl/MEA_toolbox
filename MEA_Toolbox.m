@@ -1,6 +1,4 @@
-%% Load hdf5-files and analyze spike cutouts, analog data, and spike data
-% Download link to the McsHDF5 Matlab package
-%   http://download.multichannelsystems.com/download_data/software/multi-channel-datamanager/McsMatlabDataTools.mltbx
+%% MEA Toolbox for analysing spike cutouts, analog data, and spike data
 
 %% Check if McsMatlabDataTools is installed
 if isempty(which('McsHDF5.McsData'))
@@ -21,15 +19,13 @@ addpath(genpath(topdir));
 %% Input file
 clear; 
 [file, pathname] = uigetfile('*.h5','Select HDF5 file with recording');
-if ~file % Exit script if error in opening file
+if ~file % Exit script if user canceled the open file dialog
     return
 end
 
-
 %% Load data
-% Change the dataformat from double to single to use less memory 
-% -> max voltage: +/-2mV
-% -> max time: 30min
+% Change the dataformat from double to single to use less memory, 
+% this could however lead to too low precision when using PCA.
 cfg = [];
 cfg.dataType = 'double'; 
 
@@ -46,6 +42,7 @@ if contains(recordingDate,'?')
     recordingDate = replace(recordingDate,'?','_'); 
 end
 
+% Calculate sampling rate from recording time ticks
 cfg = [];
 cfg.timestamp = []; % channel indexes (1-60)
 cfg.window = [0 1]; % time range in seconds
@@ -62,7 +59,6 @@ else
     fprintf(2,'File format is incompatible with this toolbox!\n')
     return
 end
-
 
 clc;
 fprintf('Recording: %s\n',file);
@@ -86,9 +82,9 @@ while 1
     if isempty(reply)
         reply = -1;
     end
-    %% Load segments of spike cutouts
+    
     switch reply
-        case 1
+        case 1 %% Load segments of spike cutouts    
             cfg = [];
             cfg.segment = []; % channel index ranging from i to j (1-60)
             spikecutData = dataFile.Recording{1}.SegmentStream{1}.readPartialSegmentData(cfg);
@@ -110,11 +106,14 @@ while 1
                         % PCA on spike cutouts
                         [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,labels,15 ,6);
                     case 0
+                        % Go back to main menu
                         break;
+                    otherwise % Do nothing 
                 end
             end
-        %% Load segments of analog channel data
-        case 2
+        
+        case 2 %% Load segments of analog channel data
+            
             clc;
             fprintf('Duration of recording: %d s\n', duration);
             fprintf('Input the start and end time in seconds, of which segment you want to use\n');
@@ -155,43 +154,50 @@ while 1
                 disp('2 - PCA on timeseries')
                 disp('3 - Export raw data to .mat')
                 disp('4 - Filter the data with 2nd order butterworth 200 Hz highpass filter')
-                disp('5 - Filter the data with 2nd order butterworth 8-13Hz bandpass filter')
-                disp('6 - Plot PDS of signal')
+                disp('5 - Filter the data with 2nd order butterworth 200 Hz lowpass filter')
+                disp('6 - Plot PDS of one channel')
                 disp('7 - Plot energy for each electrode')
+                disp('8 - Plot the analog value from one channel');
                 disp('0 - Go back ')
                 reply = input('Choose method: ');
                 if ~isnumeric(reply) || isempty(reply)
                     reply = -1;
                 end
                 switch reply
-                    case 1
-                        % Create cross correlation map
+                    case 1 % Create cross correlation map
                         crosscor(data,labels);
-                    case 2
-                        % PCA on timeseries
-                        [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries(data,labels,15,8);
-                    case 3
-                        % Export raw data to .mat
+                    case 2 % PCA on timeseries
+                        [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries(data,labels,15,10);
+                    case 3 % Export raw data to .mat
                         [filename, pathname] = uiputfile('*.mat','Save file as');
                         if isequal(filename,0) || isequal(pathname,0)
                            disp('User pressed cancel')
                         else
                            save([ pathname filename ],'data');
                         end
-                    case 4
-                        data = highpassFilter(2,500,fs,data);
-                    case 5
-                        data = bandpassFilter(2,8,13,fs,data);
-                    case 6
-                        plotPDS(data(:,26),'26'); %26
-                    case 7
+                    case 4 % highpass filter
+                        data = highpassFilter(1,200,fs,data);
+                    case 5 % lowpass filter
+                        data = lowpassFilter(1,200,fs,data);
+                    case 6 % Plot PDS of one channel 
+                        reply = input('Choose channel: ');
+                        if isnumeric(reply) && ~isempty(reply)
+                            plotPDS(data(:,reply),num2str(reply)); 
+                        end 
+                    case 7 % Plot energy for each electrode
                         plotEnergy(data,labels,fs);	
-                    case 0
+                    case 8 % Plot the analog value from one channel
+                        reply = input('Choose channel: ');
+                        if isnumeric(reply) && ~isempty(reply)
+                            plotAnalogdata(data,time,labels,reply)
+                        end
+                    case 0  % Go back to main menu
                         break;
+                    otherwise % Do nothing 
                 end
             end
-        %% Load segments of time stamps (spike train)
-        case 3
+        
+        case 3 %% Load segments of time stamps (spike train)
             clc;
             fprintf('Duration of recording: %d s\n', duration);
             fprintf('Input the start and end time in seconds, of which segment you want to use\n');
@@ -228,14 +234,11 @@ while 1
                     reply = -1;
                 end
                 switch(reply)   
-                    case  1
-                        % Generate heatmap
+                    case  1 % Generate heatmap
                         plotMFR( timeStamps,labels,(tEnd-tStart) )
-                    case  2
-                        % Generate bar graph of spike count
+                    case  2 % Generate bar graph of spike count
                         barGraph( timeStamps,labels )
-                    case  3
-                        % Pattern of spikes firing after a spike within a delta
+                    case  3  % Spike counting
                         while(1)
                             delta = input(['Choose delta [' char(956) 's]: ']);
                             if (~isnumeric(delta)) || isempty(delta) || delta <0
@@ -246,14 +249,11 @@ while 1
                         end
                         spikecountConnectivity(timeStamps,labels,delta,(tEnd-tStart),1);
                         clear delta;
-                    case  4
-                        % Export to ToolConnect format
+                    case  4 % Export to ToolConnect format
                         exportToolConnect(timeStamps,labels,tStart,tEnd,fs,recordingDate)
-                    case  5
-                        % Export to SpiCoDyn format
+                    case  5 % Export to SpiCoDyn format
                         exportSpiCoDyn(timeStamps,labels,tStart,tEnd,fs,recordingDate)
-                    case  6
-                        % Import Connectivity matrix from ToolConnect end plot graph
+                    case  6 % Import Connectivity matrix 
                         [filename, pathname] = uigetfile('*.txt','Select CM file to plot');
                         if isequal(filename,0) || isequal(pathname,0)
                            disp('User pressed cancel')
@@ -261,19 +261,15 @@ while 1
                            cm = load([pathname filename]);
                            dirgraph(cm,labels,0,0);
                         end
-                    case 7
-                        % Create Rasterplot
+                    case 7 % Create Rasterplot
                         rasterplot(timeStampData);
-                    case 0
-                        % Go back to main manu
+                    case 0 % Go back to main menu
                         break
-                    otherwise
-                        % Do nothing
+                    otherwise % Do nothing    
                 end
             end
 
-        case 0
-            %% Clear workspace and exit
+        case 0 %% Clear workspace and exit
             clc;
             reply = input('Clear workspace on exit? [Y/n] ','s');
             if isequal(reply,'N') || isequal(reply,'n')
@@ -281,8 +277,7 @@ while 1
             end
             clear;
             return
-        otherwise
-            % Do nothing
+        otherwise % Do nothing    
     end
 end
     

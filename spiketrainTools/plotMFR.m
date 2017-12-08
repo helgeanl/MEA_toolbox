@@ -1,6 +1,6 @@
 function plotMFR( timeStamps,labels,duration )
-%heatmapSpikes  Heatmap of mean firing rate per channel
-%   heatmapSpikes(timeStamps,duration) takes in a cell array with 60 elements 
+%plotMFR  Plot of the mean firing rate per channel
+%   plotMFR( timeStamps,labels,duration ) takes in a cell array with 60 elements 
 %   containing the spike data for each channel, the duration [seconds] of 
 %   the selected recordring, and generates a heatmap of the mean firing rate
 %   for each channel.

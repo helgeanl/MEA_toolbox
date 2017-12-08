@@ -1,6 +1,6 @@
 function plotAnalogdata( data,time,labels,chan )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%plotAnalogdata Plot the analog value from one channel
+%   plotAnalogdata( data,time,labels,chan )
     figure
     chanIndex = getLabelIndex(chan,labels);
     plot(time,data(:,chanIndex).*1e-6);

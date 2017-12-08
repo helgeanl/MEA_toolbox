@@ -1,15 +1,7 @@
 function plot_layout(channels,labels,cfg)
-%dirGraph Plot directed graph from connectivity matrix
-%   dirGraph(cm,n, highlight) input connectivity matrix cm, 
-%   with sources in the rows and targets in the columns.
-%   The threshold is defined as the mean of the connectivity matrix pluss
-%   n times the standard deviation. The size of each node is determined
-%   as the sum of the number of outputs and inputs to the node, relative 
-%   to the node with maximum inputs and outputs.
-%
-%   Use 'highlight' to select which colormap to use:
-%       highlight = 1 -> Colormap on node inputs (default)
-%       highlight = 2 -> Colormap on node outputs
+%plot_layout Plot 60MEA layout with the values in channels 
+%   plot_layout(channels,labels,cfg) 
+
     
 
     refIndex = find(contains(labels,'Ref'));

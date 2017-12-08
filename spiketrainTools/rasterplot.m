@@ -1,5 +1,5 @@
-function [  ] = rasterplot( timeStampData )
-%rasterplot Generate a rasterplot of time segment
+function rasterplot( timeStampData )
+%rasterplot Generate a rasterplot of time segments
 %   Plot spike time stamps as a rasterplot
 %   Takes in a time stamp data object (McsTimeStampStream) 
 %   and generates a heatmap with number of spikes per channel

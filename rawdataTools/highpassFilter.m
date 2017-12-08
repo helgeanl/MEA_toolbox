@@ -1,4 +1,4 @@
-function [ y ] = highpassFilter( n,wc,fs,x )
+function  y  = highpassFilter( n,wc,fs,x )
 %highpassFilter Filter signal with nth-order Butterworth highpass filter
 %   y  = highpassFilter(n,wc,fs,x) filters the data in column vector x with  
 %   a highpass butterworth filter of order n.

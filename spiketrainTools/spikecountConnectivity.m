@@ -1,8 +1,8 @@
 function spikecountConnectivity( timeStamps,labels, delta,duration,threshold)
-%spikecountConnectivity Geneate heatmap of neurons firing within a delta
-% spikecountConnectivity( timeStamps,labels, delta,duration,threshold)
-%   Takes in a time stamp data object (McsTimeStampStream) 
-%   and generates a heatmap with number of spikes per channel
+%spikecountConnectivity Heatmap and connectivity map from spike count
+%   spikecountConnectivity( timeStamps,labels, delta,duration,threshold)
+
+
     if isempty(delta)
         delta = 0;
     end

@@ -4,7 +4,6 @@ function label  = getLabel( index,labels )
 %   while the labels corresponds to the MEA layout 60MEA200/30iR.  
 %   Labels 12-17 in he first column, 21-28 in the second, ..., 71-78 in the 
 %   seventh, and 82-87 in the last.
-   % labels = getLabels();
    
     if length(index) > 1
         for i=1:length(index)

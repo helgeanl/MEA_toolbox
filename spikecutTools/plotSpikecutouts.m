@@ -1,6 +1,6 @@
 function plotSpikecutouts( data,time,chan )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%plotSpikecutouts Plot the spike cutouts from channel CHAN
+%   plotSpikecutouts( DATA,TIME,CHAN )
     size(data)
     figure
     if ~isempty(data)
