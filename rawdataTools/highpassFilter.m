@@ -11,6 +11,6 @@ function  y  = highpassFilter( n,wc,fs,x )
     [b,a]=butter(n,wc/(fs/2),'high');
     y = zeros(size(x));
     for i=1:size(x,2)
-        y(:,i) = filter(b,a,x(:,i));
+        y(:,i) = filtfilt(b,a,x(:,i));
     end
 end

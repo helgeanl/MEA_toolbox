@@ -13,6 +13,6 @@ function [ y ] = bandpassFilter( n,w1, w2,fs,x )
     y = zeros(size(x));
     % Filter each channel individually
     for i=1:size(x,2)
-        y(:,i) = filter(b,a,x(:,i));
+        y(:,i) = filtfilt(b,a,x(:,i));
     end
 end
