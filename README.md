@@ -5,6 +5,9 @@ This toolbox is intended as a framework for analysing recordings from microelect
 This toolbox requires HDF5 package (McsMatlabDataTools ) from Multi Channel Systems, this can be downloaded at www.multichannelsystems.com or installed using the Add-on Explorer in Matlab. When this is done you are ready to run.
 #### GUI
     MEA_Analysis_Toolbox.mlapp
+	Inline-style: 
+![alt text](https://github.com/helgeanl/MEA_toolbox/docs/Toolbox.PNG"MEA Tooolbox")
+
 #### Terminal based script
     MEA_Toolbox.m
 
