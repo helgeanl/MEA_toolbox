@@ -4,9 +4,9 @@
 if isempty(which('McsHDF5.McsData'))
     fprintf('--------------------------------------------\n')
     fprintf(2,'* McsMatlabDataTools is not installed.\n')
-    fprintf(2,'* Download and install the toolbox and try again\n')
+    fprintf(2,'* Install the library using the Matlab Add-On Explorer,\n')
+    fprintf(2,'* or download from this link:\n')
     fprintf(2,'* http://www.multichannelsystems.com/software/multi-channel-datamanager\n')
-    fprintf(2,'* or install using the Add-On Explorer in Matlab\n')
     fprintf('--------------------------------------------\n')
     return
 end
