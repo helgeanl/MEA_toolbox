@@ -6,7 +6,7 @@ This toolbox requires HDF5 package (McsMatlabDataTools ) from Multi Channel Syst
 #### GUI
     MEA_Analysis_Toolbox.mlapp
 	Inline-style: 
-![alt text](https://github.com/helgeanl/MEA_toolbox/docs/Toolbox.PNG "MEA Tooolbox")
+![alt text](https://github.com/helgeanl/MEA_toolbox/blob/master/docs/toolbox.PNG "MEA Tooolbox")
 
 #### Terminal based script
     MEA_Toolbox.m
