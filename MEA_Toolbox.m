@@ -46,15 +46,12 @@ end
 cfg = [];
 cfg.timestamp = []; % channel indexes (1-60)
 cfg.window = [0 1]; % time range in seconds
-if ~isempty(dataFile.Recording{1}.AnalogStream{1})
+if ~isempty(dataFile.Recording{1}.AnalogStream)
     tick = dataFile.Recording{1}.AnalogStream{1}.Info.Tick(1);
     fs = 1/(double(tick)*1e-6);
-elseif ~isempty(dataFile.Recording{1}.TimeStampStream{1})
-    tick = dataFile.Recording{1}.TimeStampStream{1}.Info.Tick(1);
+elseif ~isempty(dataFile.Recording{1}.SegmentStream)
+    tick = dataFile.Recording{1}.SegmentStream{1}.SourceInfoChannel.Tick(1);
     fs = 1/(double(tick)*1e-6);
-elseif ~isempty(app.dataFile.Recording{1}.SegmentStream{1})
-    tick = app.dataFile.Recording{1}.SegmentStream{1}.SourceInfoChannel.Tick(1);
-    app.samplingrate = 1/(double(tick)*1e-6);
 else
     fprintf(2,'File format is incompatible with this toolbox!\n')
     return
@@ -153,11 +150,12 @@ while 1
                 disp('1 - Cross correlation')
                 disp('2 - PCA on timeseries')
                 disp('3 - Export raw data to .mat')
-                disp('4 - Filter the data with 2nd order butterworth 200 Hz highpass filter')
-                disp('5 - Filter the data with 2nd order butterworth 200 Hz lowpass filter')
-                disp('6 - Plot PDS of one channel')
-                disp('7 - Plot energy for each electrode')
-                disp('8 - Plot the analog value from one channel');
+                disp('4 - Filter the data with 1st order butterworth 300 Hz highpass filter')
+                disp('5 - Filter the data with 1st order butterworth 300 Hz lowpass filter')
+                disp('6 - Filter the data with 1st order butterworth 300-3000 Hz bandpass filter')
+                disp('7 - Plot PDS of one channel')
+                disp('8 - Plot energy for each electrode')
+                disp('9 - Plot the analog value from one channel');
                 disp('0 - Go back ')
                 reply = input('Choose method: ');
                 if ~isnumeric(reply) || isempty(reply)
@@ -176,17 +174,19 @@ while 1
                            save([ pathname filename ],'data');
                         end
                     case 4 % highpass filter
-                        data = highpassFilter(1,200,fs,data);
+                        data = highpassFilter(1,300,fs,data);
                     case 5 % lowpass filter
-                        data = lowpassFilter(1,200,fs,data);
-                    case 6 % Plot PDS of one channel 
+                        data = lowpassFilter(1,300,fs,data);
+                    case 6 % bandpass filter
+                        data = bandpassFilter(1,300,3000,fs,data);
+                    case 7 % Plot PDS of one channel 
                         reply = input('Choose channel: ');
                         if isnumeric(reply) && ~isempty(reply)
                             plotPDS(data(:,reply),num2str(reply)); 
                         end 
-                    case 7 % Plot energy for each electrode
+                    case 8 % Plot energy for each electrode
                         plotEnergy(data,labels,fs);	
-                    case 8 % Plot the analog value from one channel
+                    case 9 % Plot the analog value from one channel
                         reply = input('Choose channel: ');
                         if isnumeric(reply) && ~isempty(reply)
                             plotAnalogdata(data,time,labels,reply)
