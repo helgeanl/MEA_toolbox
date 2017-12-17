@@ -12,7 +12,3 @@ This toolbox requires HDF5 package (McsMatlabDataTools ) from Multi Channel Syst
     MEA_Toolbox.m
 
 
-## Install Toolbox as an app
-There is also a pre-packaged App installer file that contains the library from Multi Channel Systems and all the source code. This can be installed and managed like a normal Matlab app. 
-
-    MEA Analysis Toolbox.mlappinstall
