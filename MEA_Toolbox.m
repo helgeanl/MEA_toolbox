@@ -101,7 +101,8 @@ while 1
                 switch reply
                     case 1
                         % PCA on spike cutouts
-                        [ coeff,score,latent,tsquared,explained,mu ]=pcaSpikeCutout( spikecuts,labels,15 ,6);
+                        [coeff,score,latent,tsquared,explained,mu]=...
+                            pcaSpikeCutout( spikecuts,labels,15 ,6);
                     case 0
                         % Go back to main menu
                         break;
@@ -165,7 +166,8 @@ while 1
                     case 1 % Create cross correlation map
                         crosscor(data,labels);
                     case 2 % PCA on timeseries
-                        [ coeff,score,latent,tsquared,explained,mu ] = pcaTimeSeries(data,labels,15,10);
+                        [coeff,score,latent,tsquared,explained,mu] = ...
+                            pcaTimeSeries(data,labels,15,10,fs);
                     case 3 % Export raw data to .mat
                         [filename, pathname] = uiputfile('*.mat','Save file as');
                         if isequal(filename,0) || isequal(pathname,0)

@@ -7,7 +7,8 @@ function [ y ] = bandpassFilter( n,w1, w2,fs,x )
 %   matrix X with a bandpass butterworth filter of order n. 
 %
 %   Both cases use respectively a lower and higher cutoff frequency 
-%   w1 and w2, with a sampling rate of fs.
+%   w1 and w2, with a sampling rate of fs. The function filfilt is used to
+%   get non-causal zero-phase filtering.
 
     [b,a]=butter(n,[w1 w2]/(fs/2),'bandpass');
     y = zeros(size(x));

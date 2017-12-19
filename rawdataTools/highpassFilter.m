@@ -6,7 +6,9 @@ function  y  = highpassFilter( n,wc,fs,x )
 %   Y = highpassFilter(n,wc,fs,X) filters the data of each column in 
 %   matrix X with a highpass butterworth filter of order n. 
 %
-%   Both cases use a cutoff frequency wc with a sampling rate fs.
+%   Both cases use a cutoff frequency wc with a sampling rate fs. 
+%   The function filfilt is used to get non-causal zero-phase filtering.
+
 
     [b,a]=butter(n,wc/(fs/2),'high');
     y = zeros(size(x));

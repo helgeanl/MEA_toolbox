@@ -7,6 +7,7 @@ function y = lowpassFilter(n,wc,fs,x)
 %   matrix X with a lowpass butterworth filter of order n. 
 %
 %   Both cases use a cutoff frequency wc with a sampling rate fs.
+%   The function filfilt is used to get non-causal zero-phase filtering.
 
     [b,a]=butter(n,wc/(fs/2),'low');
     y = zeros(size(x));

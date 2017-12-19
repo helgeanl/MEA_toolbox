@@ -1,8 +1,16 @@
 function plot_layout(channels,labels,cfg)
 %plot_layout Plot 60MEA layout with the values in channels 
 %   plot_layout(channels,labels,cfg) 
-
-    
+%   channels is a vector with 60 elements containing a value for each
+%   channel. These values are then represented by a color map in teh
+%   plotted graph. Labels is a 60 element cell array containg strings with 
+%   the names of each channel. cfg is a struct containing optional
+%   configurations.
+%
+%   Example:
+%       cfg=[];
+%       cfg.title = 'Some title';
+%       cfg.cbLabel = 'Label of the right colorbar'; 
 
     refIndex = find(contains(labels,'Ref'));
     if refIndex ~= 0 
