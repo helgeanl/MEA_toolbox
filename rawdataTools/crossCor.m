@@ -10,8 +10,8 @@ function crosscor( data,labels )
     for chan1Index = 1:nChannels
         for chan2Index = 1:nChannels
             if chan1Index ~= chan2Index
-                ccTemp = xcorr(data(:,chan1Index),data(:,chan2Index),1000,'coeff');
-                ccTemp(1001:end)=[];
+                ccTemp = xcorr(data(:,chan1Index),data(:,chan2Index),10,'coeff');
+                ccTemp(11:end)=[];
                 cc(chan1Index,chan2Index) =  mean(abs(ccTemp));   
             end
         end
