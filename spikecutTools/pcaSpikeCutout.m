@@ -21,6 +21,8 @@ function varargout = pcaSpikeCutout( spikecuts,labels,outliers,numComp )
     numComp = min(numComp,size(spikemat,2));
     
     [coeff,score,latent,tsquared,explained,mu] = pca(spikemat,'Centered',true,'NumComponents',numComp);
+    
+    % Plot explained variance
     figure;
         exp = cumsum(explained);
         plot(exp ,'-o');
@@ -29,6 +31,8 @@ function varargout = pcaSpikeCutout( spikecuts,labels,outliers,numComp )
         xlabel('Principal components');
         ylabel('x-variance [%]');
         title('Spike Cutouts - Explained variance');
+        
+    % Plot the three first scores in a 3D plot
     figure;
         hold on;
         % Use interpolation if curvefitting toolbox is installed
@@ -48,7 +52,8 @@ function varargout = pcaSpikeCutout( spikecuts,labels,outliers,numComp )
         ylabel(['PC-2 (' num2str(explained(2)) '%)']);
         zlabel(['PC-3 (' num2str(explained(3)) '%)']);
         view(3);
-        
+    
+    % Plot scores individually as line plots    
     M = size(score,2);
     N = size(score,1);
     time = linspace(0,(N-1)./1e4,N);
@@ -63,6 +68,7 @@ function varargout = pcaSpikeCutout( spikecuts,labels,outliers,numComp )
        xlabel('Time [s]');
     end
     
+    % Plot 3 and 3 loadings in the 3D plane
     figure;
         indexStart = 1;
         indexEnd = 1;
@@ -87,6 +93,8 @@ function varargout = pcaSpikeCutout( spikecuts,labels,outliers,numComp )
         title('Spike Cutouts - Loadings');
         box on;
         view(3);
+    
+    % Plot the estimated mean of each spike cutout
     figure
         scatter(mu./1e6,s,'filled')
         set(gca, 'YTick', 1:length(labels), 'YTickLabel', labels)

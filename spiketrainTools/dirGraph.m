@@ -7,9 +7,12 @@ function [degree, entropy] = dirgraph(cm,labels,n,cfg)
 %   as the sum of the number of outputs and inputs to the node, relative 
 %   to the node with maximum inputs and outputs.
 %
-%   Use 'highlight' to select which colormap to use:
-%       highlight = 1 -> Colormap on node inputs (default)
-%       highlight = 2 -> Colormap on node outputs
+%   Use 'cfg.highlight' to select which colormap to use:
+%       cfg = [];
+%       cfg.highlight = 1 -> Colormap on node inputs (default)
+%       cfg.highlight = 2 -> Colormap on node outputs
+%
+%   The title of the diagram is specified as cfg.title = 'Some title';
     
     m = mean2(cm); 
     sd = std2(cm); 

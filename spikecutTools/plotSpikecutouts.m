@@ -1,8 +1,9 @@
-function plotSpikecutouts( data,time,chan )
+function plotSpikecutouts( data,chan,fs)
 %plotSpikecutouts Plot the spike cutouts from channel CHAN
-%   plotSpikecutouts( DATA,TIME,CHAN )
-    size(data)
+%   plotSpikecutouts( DATA,CHAN,Fs )
+
     figure
+    time = (0:(size(data,1)-1))/fs*1e3;
     if ~isempty(data)
         plot(time, data);
         hold on

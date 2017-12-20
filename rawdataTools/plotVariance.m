@@ -1,11 +1,11 @@
-function variance = plotVariance(data,labels,fs)
+function variance = plotVariance(data,labels)
 %plotVariance Plot the variance from each electrode
-%   variance = plotVariance(DATA,LABELS,FS) returns a vector containing the
+%   variance = plotVariance(DATA,LABELS) returns a vector containing the
 %   variance in each electrode, sorted from lowest to highest electrode. 
 %   
 %   DATA is a NxM matrix where N is the timeseries and M electrodes. 
 %   LABELS is a cell array containing all the string labels in the
-%   recording. FS is the sampling rate.
+%   recording.
 %
 %   The variance for each electrode is plotted on the 60MEA layout.
     

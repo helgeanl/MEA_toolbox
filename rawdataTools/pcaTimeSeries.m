@@ -12,7 +12,7 @@ function varargout = pcaTimeSeries( data,labels,outliers,numComp,fs)
 %   percentages of total explained variance, and estimated mean from centering
 %   the signal.
 %   
-    
+
     % Calculate PCA
     outlierIndexes = getLabelIndex(outliers,labels);
     data(:,outlierIndexes)=[];

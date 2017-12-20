@@ -8,6 +8,7 @@ function y = lowpassFilter(n,wc,fs,x)
 %
 %   Both cases use a cutoff frequency wc with a sampling rate fs.
 %   The function filfilt is used to get non-causal zero-phase filtering.
+%   Requires Signal Processing Toolbox
 
     [b,a]=butter(n,wc/(fs/2),'low');
     y = zeros(size(x));

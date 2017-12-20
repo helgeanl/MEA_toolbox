@@ -8,7 +8,7 @@ function exportSpiCoDyn( timeStamps,labels,tStart,tEnd,fs,experiment)
 %   timeStamps is a cell array with 60 elements containing the spike data
 %   for each channel.
 %
-%   ToolConnect expect the folder structure below. Export the spiketrain to
+%   SpyCoDyn expect the folder structure below. Export the spiketrain to
 %   the phase folder corresponding to the spike train recording you want 
 %   to export. One phase of the experiment represent one recording.
 %       \Dataset
@@ -27,11 +27,13 @@ function exportSpiCoDyn( timeStamps,labels,tStart,tEnd,fs,experiment)
         disp('User pressed cancel')
         return;
     end
-
-    mkdir(path,experiment);
-    mkdir([path '/' experiment],'spikes');
-    mkdir([path '/' experiment '/spikes'],[num2str(round(tStart)) '-' num2str(round(tEnd))]);
-    datapath = [path '/' experiment '/spikes/' num2str(tStart) '-' num2str(tEnd)];
+    % Ignore returning status messages
+    [~,~,~] = mkdir(path,experiment);
+    [~,~,~] = mkdir([path '/' experiment],'spikes');
+    [~,~,~] = mkdir([path '/' experiment '/spikes'],...
+        [num2str(round(tStart)) '-' num2str(round(tEnd))]);
+    datapath = [path '/' experiment '/spikes/' num2str(round(tStart)) ...
+        '-' num2str(round(tEnd))];
 
     for index = 1:length(timeStamps)
         label = getLabel(index,labels);
@@ -43,11 +45,11 @@ function exportSpiCoDyn( timeStamps,labels,tStart,tEnd,fs,experiment)
         % while SpiCoDyn expects a tick size of 1. Multiplying with fs 
         % and dividing with one million convert the tick size to one.
         spikeData = timeStamps{index}.*(fs/1e6)-tStart*fs;
-        numSamples = num2str((tEnd-tStart)*fs);
+        numSamples = num2str((double(tEnd-tStart))*fs);
         numSpikes = num2str(length(spikeData));
         fid=fopen([datapath '\' experiment '_' label '.txt'],'w');
         fprintf(fid, [ numSamples ' \n']);
-         fprintf(fid, [ numSpikes ' \n']);
+        fprintf(fid, [ numSpikes ' \n']);
         fprintf(fid, '%d  \n', spikeData');
         fclose(fid);
     end

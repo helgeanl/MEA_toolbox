@@ -2,8 +2,9 @@ function crosscor( data,labels )
 %crosscor Cross correlation map from analog data
 %   crosscor(data) takes in a NxM matrix with a timeseries of size N 
 %   and M channels. This is used to calculate and plot the crosscorrelation
-%   between each channel.
-%   
+%   between each channel, with a lag search of 10 samples.
+%   Requires Signal Processing Toolbox
+
     tic
     nChannels = size(data,2);
     cc = zeros(nChannels,nChannels);
@@ -12,11 +13,10 @@ function crosscor( data,labels )
             if chan1Index ~= chan2Index
                 ccTemp = xcorr(data(:,chan1Index),data(:,chan2Index),10,'coeff');
                 ccTemp(11:end)=[];
-                cc(chan1Index,chan2Index) =  mean(abs(ccTemp));   
+                cc(chan1Index,chan2Index) =  max(ccTemp);
             end
         end
     end
-    
     
     % Replace channel label 'Ref' with '15'
     refIndex = find(contains(labels,'Ref'));
@@ -25,9 +25,7 @@ function crosscor( data,labels )
     end
     [labels,s ]= sort(labels);
     cc = cc(s,s);
-    cfg=[];
-    cfg.title = 'Cross correlation';
-    dirgraph(cc,1,cfg);
+    toc
     
     figure;
     imagesc(cc);
@@ -39,6 +37,9 @@ function crosscor( data,labels )
     title('Cross correlation')
     xlabel('Electrodes')
     ylabel('Electrodes')
-    toc
+    
+    cfg=[];
+    cfg.title = 'Cross correlation';
+    dirgraph(cc,labels,1,cfg);
 end
 

@@ -187,7 +187,7 @@ while 1
                             plotPDS(data(:,reply),num2str(reply)); 
                         end 
                     case 8 % Plot variance for each electrode
-                        plotVariance(data,labels,fs);	
+                        plotVariance(data,labels);	
                     case 9 % Plot the analog value from one channel
                         reply = input('Choose channel: ');
                         if isnumeric(reply) && ~isempty(reply)
