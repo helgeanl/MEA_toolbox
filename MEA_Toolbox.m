@@ -63,7 +63,8 @@ fprintf('- Date of recording: %s\n', recordingDate);
 fprintf('- Duration: %0.2f s\n', duration);
 fprintf('- Sampling rate: %d Hz\n', fs);
 fprintf('- Number of raw data recordings: %d\n',size(dataFile.Recording{1,1}.AnalogStream,2));
-fprintf('- Number of spike trains: %d\n',size(dataFile.Recording{1,1}.SegmentStream,2));
+fprintf('- Number of spike trains: %d\n',size(dataFile.Recording{1,1}.TimeStampStream,2));
+fprintf('- Number of spike cutouts: %d\n',size(dataFile.Recording{1,1}.SegmentStream,2));
 input('Press ENTER to continue...');
 
 %% Choose recording
