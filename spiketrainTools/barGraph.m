@@ -9,6 +9,15 @@ function barGraph(timeStamps,labels)
     for index=1:nChannels
        bargraph(index) = numel(timeStamps{index}); 
     end
+    
+    % Replace channel label 'Ref' with '15'
+    refIndex = find(contains(labels,'Ref'));
+    if refIndex ~= 0 
+        labels{refIndex} = '15'; 
+    end
+    [labels,s ]= sort(labels);
+    bargraph = bargraph(s,s);
+    
     figure;
     bar(bargraph);
     xlim([0 nChannels+1])
