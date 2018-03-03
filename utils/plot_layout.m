@@ -10,7 +10,8 @@ function plot_layout(channels,labels,cfg)
 %   Example:
 %       cfg=[];
 %       cfg.title = 'Some title';
-%       cfg.cbLabel = 'Label of the right colorbar'; 
+%       cfg.cbLabel = 'Label of the right colorbar';
+%       cfg.colorLim = [0 50] % Limits on colorbar [min max]
 
     refIndex = find(contains(labels,'Ref'));
     if refIndex ~= 0 
@@ -53,9 +54,17 @@ function plot_layout(channels,labels,cfg)
     end
     set(hAxesNode,'xtick',[]);
     set(hAxesNode,'ytick',[]);
+    
+    % Specify title
     if isfield(cfg, 'title')
         title(cfg.title)
     end
+    
+    % Add limits on colorbar
+    if isfield(cfg, 'colorLim')
+        caxis(hAxesNode, cfg.colorLim);
+    end
+    
 end
 
 

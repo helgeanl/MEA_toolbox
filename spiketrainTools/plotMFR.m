@@ -5,29 +5,32 @@ function plotMFR( timeStamps,labels,duration )
 %   the selected recordring, and generates a heatmap of the mean firing rate
 %   for each channel.
     
+    % Limits to the colorbar [min max]
+    colorLimits = [0 40];
+
     label = 11;
     heat = zeros(8,8);
     for j = 1:8
         for i = 1:8
             if ~((i==1 || i==8)&& (j==1 || j==8))
                 if label == 15 % Channel 15 is called 'Ref' in the data
-                    index =find(contains(labels,'Ref','IgnoreCase',true));
+                    index =find(contains(labels, 'Ref', 'IgnoreCase', true));
                 else
-                    index =find(contains(labels,num2str(label),'IgnoreCase',true));
+                    index =find(contains(labels, num2str(label), 'IgnoreCase', true));
                 end
-                heat(i,j) = numel(timeStamps{index})/duration;
+                heat(i,j) = numel(timeStamps{index}) / duration;
             end
             if mod(label,10) < 8
-                label = label +1;
+                label = label + 1;
             else
-            label = label +3;
+            label = label + 3;
             end
         end
     end
     figure;
-    heatmap(heat);
+    h = heatmap(heat);
+    h.ColorLimits = colorLimits;
     title('Mean firing rate [spike/s]')
-
 
     % Replace channel label 'Ref' with '15'
     refIndex = find(contains(labels,'Ref'));
@@ -44,6 +47,7 @@ function plotMFR( timeStamps,labels,duration )
     cfg = [];
     cfg.title = 'Mean firing rate';
     cfg.cbLabel = '[spike/s]';
-    plot_layout(mfr,labels,cfg);
+    cfg.colorLim = colorLimits;
+    plot_layout(mfr, labels, cfg);
 end
 
