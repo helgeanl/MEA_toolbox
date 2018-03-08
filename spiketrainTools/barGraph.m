@@ -6,9 +6,6 @@ function barGraph(timeStamps,labels)
 
     nChannels = length(timeStamps);
     bargraph = zeros(nChannels,1);
-    for index=1:nChannels
-       bargraph(index) = numel(timeStamps{index}); 
-    end
     
     % Replace channel label 'Ref' with '15'
     refIndex = find(contains(labels,'Ref'));
@@ -16,7 +13,11 @@ function barGraph(timeStamps,labels)
         labels{refIndex} = '15'; 
     end
     [labels,s ]= sort(labels);
-    bargraph = bargraph(s,s);
+    timeStamps = timeStamps(s);
+    
+    for index=1:nChannels
+       bargraph(index) = numel(timeStamps{index}); 
+    end
     
     figure;
     bar(bargraph);
