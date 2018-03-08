@@ -185,7 +185,7 @@ while 1
                     case 7 % Plot PDS of one channel 
                         reply = input('Choose channel: ');
                         if isnumeric(reply) && ~isempty(reply)
-                            plotPDS(data(:,reply),num2str(reply)); 
+                            plotPDS(data(:,reply),num2str(reply), Inf); 
                         end 
                     case 8 % Plot variance for each electrode
                         plotVariance(data,labels);	
@@ -238,7 +238,7 @@ while 1
                 end
                 switch(reply)   
                     case  1 % Generate heatmap
-                        plotMFR( timeStamps,labels,(tEnd-tStart) )
+                        plotMFR( timeStamps,labels,(tEnd-tStart), 40)
                     case  2 % Generate bar graph of spike count
                         barGraph( timeStamps,labels )
                     case  3  % Spike counting

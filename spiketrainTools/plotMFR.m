@@ -1,4 +1,4 @@
-function plotMFR( timeStamps,labels,duration )
+function plotMFR( timeStamps,labels,duration, maxValue )
 %plotMFR  Plot of the mean firing rate per channel
 %   plotMFR( timeStamps,labels,duration ) takes in a cell array with 60 elements 
 %   containing the spike data for each channel, the duration [seconds] of 
@@ -6,7 +6,7 @@ function plotMFR( timeStamps,labels,duration )
 %   for each channel.
     
     % Limits to the colorbar [min max]
-    colorLimits = [0 40];
+    colorLimits = [0 maxValue];
 
     label = 11;
     heat = zeros(8,8);
