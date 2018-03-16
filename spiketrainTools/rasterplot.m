@@ -17,7 +17,7 @@ function rasterplot( timeStampData )
     if refIndex ~= 0 
         labels{refIndex} = '15'; 
     end
-    [timeStampData.Info.Label, s] = sort(labels);
+    [labels, s] = sort(labels);
     timeStamps = timeStamps(s);
  
     figure;
